@@ -3,10 +3,11 @@ from flaggit.models import Flag, FlagInstance, CONTENT_APPROVED, \
     CONTENT_REJECTED
 from datetime import datetime
 
+
 class FlagAdmin(admin.ModelAdmin):
     list_filter = ('status',)
     list_display = ('status', 'link', 'created',
-        'reviewer', 'reviewed', 'num_flags')
+                    'reviewer', 'reviewed', 'num_flags')
     
     actions = ['approve', 'reject']
     actions_on_bottom = True
@@ -42,6 +43,6 @@ class FlagAdmin(admin.ModelAdmin):
         del actions['delete_selected']
         return actions
 
+
 admin.site.register(Flag, FlagAdmin)
 admin.site.register(FlagInstance)
-

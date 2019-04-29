@@ -6,6 +6,7 @@ from flaggit import utils
 from flaggit.forms import FlagForm
 from flaggit.models import Flag
 
+
 class FlagView(View):
     def post(self, request):
         form = FlagForm(request.POST)
@@ -24,6 +25,7 @@ class FlagView(View):
         if 'next' in request.GET:
             return HttpResponseRedirect(request.GET.get('next'))
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 
 def flag_action(request, **kwargs):
 

@@ -1,6 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from flaggit.models import Flag, FlagInstance
 
+
 def flag(obj, user=None, ip=None, comment=None):
     flag, created = Flag.objects.get_or_create(
         object_id=obj.pk,
@@ -31,4 +32,3 @@ def flag(obj, user=None, ip=None, comment=None):
     flag_instance.save()
     
     return flag_instance
-    

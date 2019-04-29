@@ -1,10 +1,11 @@
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 
+
 class FlagForm(forms.Form):
     object_id = forms.IntegerField(widget=forms.HiddenInput)
     content_type = forms.ModelChoiceField(widget=forms.HiddenInput,
-        queryset=ContentType.objects.all())
+                                          queryset=ContentType.objects.all())
     comment = forms.CharField(widget=forms.Textarea, required=False)
     
     def clean(self):
@@ -18,4 +19,3 @@ class FlagForm(forms.Form):
         
         self.cleaned_data['object'] = obj
         return self.cleaned_data
-    

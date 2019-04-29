@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.signals import post_save, post_init
@@ -25,10 +25,11 @@ FLAG_TYPES = (
     (4, 'Move To Promotions'),
 )
 
+
 class Flag(models.Model):
     object_id = models.PositiveIntegerField()
     content_type = models.ForeignKey(ContentType)
-    content_object = generic.GenericForeignKey("content_type", "object_id")
+    content_object = GenericForeignKey("content_type", "object_id")
 
     _pre_save_status = None
     status = models.PositiveIntegerField(choices=FLAG_CHOICES, default=FLAGGED)
@@ -53,8 +54,10 @@ class FlagInstance(models.Model):
     def __unicode__(self):
         return u'%s: %s' % (self.user, self.flag.content_object)
 
+
 def post_init_handler(sender, instance, **kwargs):
     instance._pre_save_status = instance.status
+
 
 def flag_handler(sender, instance, created=False, **kwargs):
     if created:
@@ -80,6 +83,7 @@ def flag_instance_handler(sender, instance, created=False, **kwargs):
         return
     
     flagged.send(instance.flag.content_object, flag=instance.flag, created=False)
+
 
 post_init.connect(post_init_handler, sender=Flag, dispatch_uid='flaggit.flag.post_init')
 post_save.connect(flag_handler, sender=Flag, dispatch_uid='flaggit.flag.post_save')
