@@ -35,7 +35,7 @@ class Flag(models.Model):
     status = models.PositiveIntegerField(choices=FLAG_CHOICES, default=FLAGGED)
     created = models.DateTimeField(auto_now_add=True)
     reviewed = models.DateTimeField(blank=True, null=True)
-    reviewer = models.ForeignKey(User, blank=True, null=True)
+    reviewer = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
 
     comment = models.TextField(blank=True, null=True)
 
@@ -44,8 +44,8 @@ class Flag(models.Model):
 
 
 class FlagInstance(models.Model):
-    flag = models.ForeignKey(Flag, related_name='flags')
-    user = models.ForeignKey(User, blank=True, null=True)
+    flag = models.ForeignKey(Flag, related_name='flags', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     ip = models.IPAddressField(blank=True, null=True)
     datetime = models.DateTimeField(auto_now_add=True)
     flag_type = models.PositiveIntegerField(choices=FLAG_TYPES, default=1)
