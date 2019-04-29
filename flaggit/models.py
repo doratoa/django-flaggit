@@ -46,7 +46,7 @@ class Flag(models.Model):
 class FlagInstance(models.Model):
     flag = models.ForeignKey(Flag, related_name='flags', on_delete=models.CASCADE)
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
-    ip = models.IPAddressField(blank=True, null=True)
+    ip = models.GenericIPAddressField(blank=True, null=True)
     datetime = models.DateTimeField(auto_now_add=True)
     flag_type = models.PositiveIntegerField(choices=FLAG_TYPES, default=1)
     comment = models.TextField(blank=True, null=True)
