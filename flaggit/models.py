@@ -1,9 +1,9 @@
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes import fields
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.signals import post_save, post_init
-from flaggit.signals import flagged, review, rejected, approved
+from .signals import flagged, review, rejected, approved
 
 
 FLAGGED = 1
@@ -29,13 +29,13 @@ FLAG_TYPES = (
 class Flag(models.Model):
     object_id = models.PositiveIntegerField()
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    content_object = GenericForeignKey("content_type", "object_id")
+    content_object = fields.GenericForeignKey("content_type", "object_id")
 
     _pre_save_status = None
     status = models.PositiveIntegerField(choices=FLAG_CHOICES, default=FLAGGED)
     created = models.DateTimeField(auto_now_add=True)
     reviewed = models.DateTimeField(blank=True, null=True)
-    reviewer = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    reviewer = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
     comment = models.TextField(blank=True, null=True)
 
@@ -45,7 +45,7 @@ class Flag(models.Model):
 
 class FlagInstance(models.Model):
     flag = models.ForeignKey(Flag, related_name='flags', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     ip = models.GenericIPAddressField(blank=True, null=True)
     datetime = models.DateTimeField(auto_now_add=True)
     flag_type = models.PositiveIntegerField(choices=FLAG_TYPES, default=1)
@@ -87,5 +87,4 @@ def flag_instance_handler(sender, instance, created=False, **kwargs):
 
 post_init.connect(post_init_handler, sender=Flag, dispatch_uid='flaggit.flag.post_init')
 post_save.connect(flag_handler, sender=Flag, dispatch_uid='flaggit.flag.post_save')
-post_save.connect(flag_instance_handler, sender=FlagInstance,
-    dispatch_uid='flaggit.flaginstance.post_save')
+post_save.connect(flag_instance_handler, sender=FlagInstance, dispatch_uid='flaggit.flaginstance.post_save')
