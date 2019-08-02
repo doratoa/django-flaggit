@@ -8,7 +8,7 @@ Installation
 
 ::
 
-    pip install django-flaggit
+    pip install git+https://github.com/TheBimHub/django-flaggit.git
 
 Usage:
 ------
